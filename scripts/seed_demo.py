@@ -29,5 +29,5 @@ for i in range(98):
  history.append({'day':str(day),'units':max(0,round(8+i*.035+(4 if day.weekday()<5 else -3)+random.gauss(0,1.3)))})
 api('/forecast/history',{'productId':products[0]['id'],'warehouseId':warehouses[0]['id'],'source':'SYNTHETIC walkthrough data; not real business sales','days':history})
 with (root/'docs/synthetic-sales-example.csv').open('w',newline='') as f:
- writer=csv.DictWriter(f,fieldnames=['day','units']);writer.writeheader();writer.writerows(history)
+ writer=csv.DictWriter(f,fieldnames=['day','units'],lineterminator='\n');writer.writeheader();writer.writerows(history)
 print('Created sample records through the API. The forecast source explicitly identifies synthetic data.')

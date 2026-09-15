@@ -20,7 +20,7 @@ with zipfile.ZipFile(archive) as z:
   book.close()
 start=date(2010,12,1);end=date(2011,12,9);out=root/'docs/uci-22423-daily.csv'
 with out.open('w',newline='') as f:
- w=csv.writer(f);w.writerow(['day','units'])
+ w=csv.writer(f,lineterminator="\n");w.writerow(['day','units'])
  day=start
  while day<=end:w.writerow([str(day),counts[day]]);day+=timedelta(days=1)
 (root/'docs/uci-provenance.json').write_text(json.dumps({'source':'Chen, D. (2015). Online Retail. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33','license':'CC BY 4.0','stockCode':'22423','description':'REGENCY CAKESTAND 3 TIER','rawRowsScanned':scanned,'rowsRetained':kept,'dailyObservations':(end-start).days+1,'transformations':'Keep positive quantity and positive price, exclude cancellation invoices; aggregate all countries by day, fill no-sales dates with zero. Gross sales units, not uncensored demand. No customer identifiers exported.','rawZipSha256':hashlib.sha256(archive.read_bytes()).hexdigest()},indent=2)+'\n')
