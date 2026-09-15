@@ -1,0 +1,11 @@
+{
+  "source": "Chen, D. (2015). Online Retail. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33",
+  "license": "CC BY 4.0",
+  "stockCode": "22423",
+  "description": "REGENCY CAKESTAND 3 TIER",
+  "rawRowsScanned": 541909,
+  "rowsRetained": 2017,
+  "dailyObservations": 374,
+  "transformations": "Keep positive quantity and positive price, exclude cancellation invoices; aggregate all countries by day, fill no-sales dates with zero. Gross sales units, not uncensored demand. No customer identifiers exported.",
+  "rawZipSha256": "f5385cbb54bbebf7196389109c6b0621faab0c304e3702548165e71c84aede8b"
+}

@@ -1,0 +1,43 @@
+{
+  "status": "ready",
+  "selectedModel": "random_forest",
+  "trainingDays": 360,
+  "holdoutDays": 14,
+  "modelMae": 29.448,
+  "baselineMae": 32.857,
+  "evaluation": "14-day chronological holdout; recursive predictions without future inputs. Model selection uses this holdout, so this is a validation result, not an independent test estimate.",
+  "forecast": [
+    {
+      "day": "2011-12-10",
+      "units": 0.49
+    },
+    {
+      "day": "2011-12-11",
+      "units": 22.4
+    },
+    {
+      "day": "2011-12-12",
+      "units": 34.86
+    },
+    {
+      "day": "2011-12-13",
+      "units": 65.44
+    },
+    {
+      "day": "2011-12-14",
+      "units": 66.86
+    },
+    {
+      "day": "2011-12-15",
+      "units": 56.2
+    },
+    {
+      "day": "2011-12-16",
+      "units": 31.39
+    }
+  ],
+  "historyEnd": "2011-12-09",
+  "staleHistory": true,
+  "limitation": "Forecasts assume observed sales represent demand. Stockouts, promotions and sparse history can bias results.",
+  "dataset": "UCI Online Retail, stock 22423; see DATA_SOURCES.md"
+}

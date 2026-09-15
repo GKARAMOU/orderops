@@ -1,0 +1,13 @@
+CREATE TABLE app_user(id BIGSERIAL PRIMARY KEY, email VARCHAR(254) NOT NULL UNIQUE, password_hash VARCHAR(100) NOT NULL, role VARCHAR(20) NOT NULL CHECK(role IN ('ADMIN','OPERATOR','VIEWER')));
+CREATE TABLE product(id BIGSERIAL PRIMARY KEY, sku VARCHAR(60) NOT NULL UNIQUE, name VARCHAR(160) NOT NULL, price NUMERIC(12,2) NOT NULL CHECK(price>=0));
+CREATE TABLE warehouse(id BIGSERIAL PRIMARY KEY, name VARCHAR(120) NOT NULL UNIQUE);
+CREATE TABLE inventory(id BIGSERIAL PRIMARY KEY, product_id BIGINT NOT NULL REFERENCES product, warehouse_id BIGINT NOT NULL REFERENCES warehouse, on_hand INTEGER NOT NULL DEFAULT 0, reserved INTEGER NOT NULL DEFAULT 0, UNIQUE(product_id,warehouse_id), CHECK(on_hand>=0 AND reserved>=0 AND reserved<=on_hand));
+CREATE TABLE customer_order(id BIGSERIAL PRIMARY KEY, request_key VARCHAR(100) NOT NULL UNIQUE, fingerprint TEXT NOT NULL, customer VARCHAR(160) NOT NULL, warehouse_id BIGINT NOT NULL REFERENCES warehouse, status VARCHAR(20) NOT NULL CHECK(status IN ('RESERVED','FULFILLED','CANCELLED')), created_at TIMESTAMPTZ NOT NULL);
+CREATE TABLE order_line(id BIGSERIAL PRIMARY KEY, order_id BIGINT NOT NULL REFERENCES customer_order, product_id BIGINT NOT NULL REFERENCES product, quantity INTEGER NOT NULL CHECK(quantity>0), unit_price NUMERIC(12,2) NOT NULL, UNIQUE(order_id,product_id));
+CREATE TABLE purchase_order(id BIGSERIAL PRIMARY KEY, supplier VARCHAR(160) NOT NULL, product_id BIGINT NOT NULL REFERENCES product, warehouse_id BIGINT NOT NULL REFERENCES warehouse, quantity INTEGER NOT NULL CHECK(quantity>0), status VARCHAR(20) NOT NULL CHECK(status IN ('OPEN','RECEIVED','CANCELLED')), created_at TIMESTAMPTZ NOT NULL);
+CREATE TABLE audit_event(id BIGSERIAL PRIMARY KEY, actor VARCHAR(254) NOT NULL, action VARCHAR(80) NOT NULL, entity_type VARCHAR(40) NOT NULL, entity_id BIGINT NOT NULL, details TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL);
+CREATE TABLE outbox_event(id BIGSERIAL PRIMARY KEY, event_type VARCHAR(80) NOT NULL, payload TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0, next_attempt_at TIMESTAMPTZ NOT NULL, delivered_at TIMESTAMPTZ);
+CREATE TABLE notification(id BIGSERIAL PRIMARY KEY, event_id BIGINT NOT NULL UNIQUE REFERENCES outbox_event, message TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL);
+CREATE INDEX idx_orders_created ON customer_order(created_at);
+CREATE INDEX idx_audit_created ON audit_event(created_at);
+CREATE INDEX idx_outbox_pending ON outbox_event(next_attempt_at) WHERE delivered_at IS NULL;

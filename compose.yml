@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: orderops
+      POSTGRES_USER: orderops
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?Run python3 scripts/configure.py first}
+    volumes:
+      - orderops-db:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U orderops -d orderops"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  forecast:
+    build: ./forecast
+    healthcheck:
+      test:
+        [
+          CMD,
+          python,
+          -c,
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/orderops
+      DATABASE_USER: orderops
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?Run python3 scripts/configure.py first}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@orderops.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      FORECAST_URL: http://forecast:8000
+    depends_on:
+      db:
+        condition: service_healthy
+      forecast:
+        condition: service_healthy
+volumes:
+  orderops-db:
