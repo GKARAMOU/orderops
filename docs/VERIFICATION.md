@@ -8,7 +8,7 @@ PostgreSQL, not an in-memory replacement.
 | --- | --- | --- |
 | Backend integration | 18 passed, 0 skipped | Transactions, contention, idempotency, rollback, order/purchase transitions, authentication, authorization, validation, outbox and insufficient-history behavior |
 | Forecast service | 5 passed | Seven-day inference, baseline selection, gaps, duplicates, insufficient history and zero demand |
-| Browser workflows | 5 passed | Catalog/stock/order fulfillment, purchase receipt persistence after reload, live model inference, read-only role and mobile layout |
+| Browser workflows | 6 passed | Catalog/stock/order fulfillment, purchase receipt persistence after reload, live model inference, attributed CSV upload/evaluation, read-only role and mobile layout |
 | Frontend production build | Passed | TypeScript compilation and Vite bundle |
 
 The contention scenario starts eight concurrent buyers for one available unit and
@@ -34,4 +34,4 @@ series, not an independent test estimate or business-impact measurement.
 
 GitHub Actions separately runs Testcontainers-based backend verification, forecast tests
 and a full Docker Compose build plus browser tests. The workflow badge and run logs are
-the authoritative record for container/CI status; local checks alone do not establish it.
+the authoritative record for container/CI status. Run 35015452611 passed all three jobs, including the complete container build and browser workflows; the added CSV-upload scenario also passed locally.
